@@ -15,13 +15,7 @@ class UserImage(models.Model):
     width = models.PositiveIntegerField(blank=True, null=True)
     height = models.PositiveIntegerField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        image = PILImage.open(self.image.path)
-        self.format = image.format.lower() if image.format else ''
-        self.width, self.height = image.size
-        super().save(*args, **kwargs)
-
     def __str__(self):
         image_name = self.image.name
         return image_name.replace("images/", "")
+
