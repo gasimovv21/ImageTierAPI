@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .utils import create_image, receive_images
+from .utils import create_image, receive_images, receive_user_image
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -21,6 +21,12 @@ def getRoutes(request):
 def get_images(request):
     if request.method == 'GET':
         return receive_images(request)
+
+
+@api_view(['GET'])
+def get_user_images(request, username):
+    if request.method == 'GET':
+        return receive_user_image(request, username)
 
 @api_view(['POST'])
 def post_image(request):

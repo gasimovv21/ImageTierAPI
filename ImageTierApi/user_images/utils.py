@@ -5,7 +5,13 @@ from .models import UserImage
 from user_accounts.models import UserAccount
 from PIL import Image
 
+
 def create_image(request):
+    """
+    POST - Post image
+    """
+
+
     username = request.data.get('username')
     tier = request.data.get('tier')
 
@@ -40,8 +46,26 @@ def create_image(request):
         return Response(image_serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 def receive_images(request):
+    """
+    GET - All images
+    """
+
     images = UserImage.objects.all()
     serializer = ImageSerializer(images, many=True)
     return Response(serializer.data)
+
+
+def receive_user_image(request, username):
+    try:
+        user = UserAccount.objects.get(username=username)
+    except UserAccount.DoesNotExist:
+        return Response({'error': 'User with this username does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    images = UserImage.objects.filter(user=user)
+    serializer = ImageSerializer(images, many=True)
+    return Response(serializer.data)
+
+
