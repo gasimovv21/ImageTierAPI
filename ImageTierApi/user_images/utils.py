@@ -1,7 +1,7 @@
-import requests
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ImageSerializer
+from .models import UserImage
 from user_accounts.models import UserAccount
 from PIL import Image
 
@@ -9,13 +9,11 @@ def create_image(request):
     username = request.data.get('username')
     tier = request.data.get('tier')
 
-    # Cheking user
     try:
         user = UserAccount.objects.get(username=username)
     except UserAccount.DoesNotExist:
         return Response({'error': 'User with this username does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # Checking tier
     if tier not in ('Basic', 'Premium', 'Enterprise'):
         return Response({'error': 'Such a tier does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
     if user.tier != tier:
@@ -42,3 +40,8 @@ def create_image(request):
         return Response(image_serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+def receive_images(request):
+    images = UserImage.objects.all()
+    serializer = ImageSerializer(images, many=True)
+    return Response(serializer.data)
