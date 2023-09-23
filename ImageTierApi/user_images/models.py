@@ -21,7 +21,7 @@ class UserImage(models.Model):
         self.format = image.format.lower() if image.format else ''
         self.width, self.height = image.size
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         image_name = self.image.name
         return image_name.replace("images/", "")
