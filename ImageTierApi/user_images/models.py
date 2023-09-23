@@ -1,7 +1,4 @@
 from django.db import models
-from PIL import Image as PILImage
-
-
 from user_accounts.models import UserAccount
 
 class UserImage(models.Model):
