@@ -19,6 +19,7 @@ class UserAccountAdmin(admin.ModelAdmin):
         'surname',
         'username',
         'tier',
+        'images',
     )
     list_filter = (
         'id',
@@ -26,5 +27,6 @@ class UserAccountAdmin(admin.ModelAdmin):
         'surname',
         'username',
         'tier',
+        'images',
     )
     empty_value_display = '-empty-'

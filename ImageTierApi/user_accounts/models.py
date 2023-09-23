@@ -1,4 +1,5 @@
 from django.db import models
+from user_images.models import UserImage
 
 class UserAccount(models.Model):
     name = models.CharField(max_length=100)
@@ -18,3 +19,5 @@ class UserAccount(models.Model):
         max_length=20,
         choices=TIER_CHOICES
     )
+
+    images = models.ManyToManyField(UserImage, related_name='user_accounts')
