@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from user_accounts.models import UserAccount
 
+
 def validate_image_extension(value):
     valid_extensions = ['.jpg', '.jpeg', '.png']
     ext = str(value).lower()
@@ -39,6 +40,10 @@ class UserImage(models.Model):
     height = models.PositiveIntegerField(
         blank=settings.USER_IMAGE_HEIGHT_BLANK,
         null=settings.USER_IMAGE_HEIGHT_NULL
+    )
+    expire_link = models.CharField(
+        max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
+        blank=settings.USER_IMAGE_EXPIRE_LINK_BLANK,
     )
 
     def save(self, *args, **kwargs):
