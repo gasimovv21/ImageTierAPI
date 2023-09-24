@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class UserAccount(models.Model):
     name = models.CharField(max_length=100)
@@ -8,15 +9,9 @@ class UserAccount(models.Model):
         unique=True
         )
 
-    TIER_CHOICES = [
-        ('Basic', 'Basic'),
-        ('Premium', 'Premium'),
-        ('Enterprise', 'Enterprise'),
-    ]
-
     tier = models.CharField(
         max_length=20,
-        choices=TIER_CHOICES
+        choices=settings.TIER_CHOICES
     )
 
     def __str__(self) -> str:

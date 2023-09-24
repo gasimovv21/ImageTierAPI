@@ -5,6 +5,7 @@ from .models import UserImage
 class UserImageAdmin(admin.ModelAdmin):
     list_display = (
         'id',
+        'user',
         'image',
         'format',
         'width',
@@ -12,6 +13,7 @@ class UserImageAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'id',
+        'user',
         'image',
         'format',
         'width',
@@ -19,6 +21,7 @@ class UserImageAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'id',
+        'user',
         'image',
         'format',
         'width',
