@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from user_accounts.models import UserAccount
+from django.utils import timezone
 
 
 def validate_image_extension(value):
@@ -40,6 +41,13 @@ class UserImage(models.Model):
     height = models.PositiveIntegerField(
         blank=settings.USER_IMAGE_HEIGHT_BLANK,
         null=settings.USER_IMAGE_HEIGHT_NULL
+    )
+    expire_link_duration = models.PositiveIntegerField(
+        default=300,  # Default value => 300 seconds
+        validators=[
+            models.MinValueValidator(300),  # Max value => 300 seconds
+            models.MaxValueValidator(30000),  # Max value => 30 000 seconds
+        ]
     )
     expire_link = models.CharField(
         max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
