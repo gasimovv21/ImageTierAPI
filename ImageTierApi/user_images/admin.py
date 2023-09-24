@@ -11,7 +11,7 @@ class UserImageAdmin(admin.ModelAdmin):
         'format',
         'width',
         'height',
-        'expire_link_status',  # Вместо 'expire_link' используем 'expire_link_status'
+        'expire_link_status',
     )
     search_fields = (
         'id',

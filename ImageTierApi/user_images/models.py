@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from user_accounts.models import UserAccount
 from django.utils import timezone
 
@@ -45,8 +45,8 @@ class UserImage(models.Model):
     expire_link_duration = models.PositiveIntegerField(
         default=300,  # Default value => 300 seconds
         validators=[
-            models.MinValueValidator(300),  # Max value => 300 seconds
-            models.MaxValueValidator(30000),  # Max value => 30 000 seconds
+            MinValueValidator(300),  # Max value => 300 seconds
+            MaxValueValidator(30000),  # Max value => 30 000 seconds
         ]
     )
     expire_link = models.CharField(
