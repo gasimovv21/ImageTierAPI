@@ -47,22 +47,22 @@ def create_image(request):
         image_serializer.instance.format = image.format.lower() if image.format else ''
         image_serializer.instance.width, image_serializer.instance.height = image.size
         
-        tier_message = ''
+        account_tier = ''
         thumbnail_200_url = None
         thumbnail_400_url = None
         original_image_url = None
 
         if tier == settings.TIER_CHOICES[0][0]:
-            tier_message = settings.TIER_CHOICES[0][1]
+            account_tier = settings.TIER_CHOICES[0][1]
             thumbnail_200_size = 200
         elif tier == settings.TIER_CHOICES[1][0]:
-            tier_message = settings.TIER_CHOICES[1][1]
+            account_tier = settings.TIER_CHOICES[1][1]
             thumbnail_200_size = 200
         elif tier == settings.TIER_CHOICES[2][0]:
-            tier_message = settings.TIER_CHOICES[2][1]
+            account_tier = settings.TIER_CHOICES[2][1]
             thumbnail_200_size = 200
 
-        if tier_message:
+        if account_tier:
             image_serializer.instance.save()
             
             thumbnail_200 = image.copy()
@@ -86,19 +86,14 @@ def create_image(request):
                 
                 original_image_url = urljoin(settings.MEDIA_URL, os.path.relpath(image_serializer.instance.image.path, settings.MEDIA_ROOT))
 
-            response_data = {"message": f"{tier_message}!", "thumbnail_url_200px": thumbnail_200_url}
+            response_data = {"There is your link thumbnail that's 200px in height:": thumbnail_200_url}
             
             if thumbnail_400_url:
-                response_data["thumbnail_url_400px"] = thumbnail_400_url
+                response_data["There is your link thumbnail that's 400px in height:"] = thumbnail_400_url
             if original_image_url:
-                response_data["original_image_url"] = original_image_url
+                response_data["There is your original uploaded image link: "] = original_image_url
             return Response(response_data, status=status.HTTP_201_CREATED)
     return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
 
 
 def receive_images(request):
