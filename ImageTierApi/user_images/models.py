@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from user_accounts.models import UserAccount
@@ -13,12 +14,32 @@ class UserImage(models.Model):
     user = models.ForeignKey(
         UserAccount,
         on_delete=models.CASCADE,
-        related_name='images'
+        related_name=settings.USER_IMAGE_USER_RELATED_NAME
     )
-    image = models.ImageField(upload_to='images/', validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
-    format = models.CharField(max_length=10, blank=True)
-    width = models.PositiveIntegerField(blank=True, null=True)
-    height = models.PositiveIntegerField(blank=True, null=True)
+    image = models.ImageField(
+        upload_to=settings.USER_IMAGE_IMAGE_UPLOAD_TO,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=[
+                    'jpg',
+                    'jpeg',
+                    'png'
+                ]
+            )
+        ]
+    )
+    format = models.CharField(
+        max_length=settings.USER_IMAGE_FORMAT_MAX_LENGTH,
+        blank=settings.USER_IMAGE_FORMAT_BLANK
+    )
+    width = models.PositiveIntegerField(
+        blank=settings.USER_IMAGE_WIDTH_BLANK,
+        null=settings.USER_IMAGE_WIDTH_NULL
+    )
+    height = models.PositiveIntegerField(
+        blank=settings.USER_IMAGE_HEIGHT_BLANK,
+        null=settings.USER_IMAGE_HEIGHT_NULL
+    )
 
     def save(self, *args, **kwargs):
         self.format = self.image.name.split('.')[-1].lower()
