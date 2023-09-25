@@ -1,6 +1,13 @@
 from django.contrib import admin
-from django.utils.html import format_html
-from .models import UserImage
+from .models import UserImage, ThumbnailImage, ExpireLink
+
+class ExpireLinkInline(admin.TabularInline):
+    model = ExpireLink
+    extra = 1
+
+class ThumbnailImageInline(admin.TabularInline):
+    model = ThumbnailImage
+    extra = 1
 
 @admin.register(UserImage)
 class UserImageAdmin(admin.ModelAdmin):
@@ -11,16 +18,14 @@ class UserImageAdmin(admin.ModelAdmin):
         'format',
         'width',
         'height',
-        'expire_link_status',
     )
     search_fields = (
         'id',
-        'user',
+        'user__username',
         'image',
         'format',
         'width',
         'height',
-        'expire_link',
     )
     list_filter = (
         'id',
@@ -29,14 +34,6 @@ class UserImageAdmin(admin.ModelAdmin):
         'format',
         'width',
         'height',
-        'expire_link',
     )
     empty_value_display = '-empty-'
-
-    def expire_link_status(self, obj):
-        if obj.expire_link:
-            return format_html('<img src="/static/admin/img/icon-yes.svg" alt="True">')
-        else:
-            return format_html('<img src="/static/admin/img/icon-no.svg" alt="False">')
-
-    expire_link_status.short_description = 'Expire Link Status'
+    inlines = [ThumbnailImageInline, ExpireLinkInline]

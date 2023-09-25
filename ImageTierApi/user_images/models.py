@@ -1,16 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from user_accounts.models import UserAccount
-from django.utils import timezone
 
-
-def validate_image_extension(value):
-    valid_extensions = ['.jpg', '.jpeg', '.png']
-    ext = str(value).lower()
-    if not ext.endswith(tuple(valid_extensions)):
-        raise ValidationError('Not allowed format of image. Allowed formats: JPG, JPEG, PNG')
 
 class UserImage(models.Model):
     user = models.ForeignKey(
@@ -28,30 +20,22 @@ class UserImage(models.Model):
                     'png'
                 ]
             )
-        ]
+        ],
     )
     format = models.CharField(
         max_length=settings.USER_IMAGE_FORMAT_MAX_LENGTH,
-        blank=settings.USER_IMAGE_FORMAT_BLANK
+        blank=settings.USER_IMAGE_FORMAT_BLANK,
+        editable=False
     )
     width = models.PositiveIntegerField(
         blank=settings.USER_IMAGE_WIDTH_BLANK,
-        null=settings.USER_IMAGE_WIDTH_NULL
+        null=settings.USER_IMAGE_WIDTH_NULL,
+        editable=False
     )
     height = models.PositiveIntegerField(
         blank=settings.USER_IMAGE_HEIGHT_BLANK,
-        null=settings.USER_IMAGE_HEIGHT_NULL
-    )
-    expire_link_duration = models.PositiveIntegerField(
-        default=300,  # Default value => 300 seconds
-        validators=[
-            MinValueValidator(300),  # Max value => 300 seconds
-            MaxValueValidator(30000),  # Max value => 30 000 seconds
-        ]
-    )
-    expire_link = models.CharField(
-        max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
-        blank=settings.USER_IMAGE_EXPIRE_LINK_BLANK,
+        null=settings.USER_IMAGE_HEIGHT_NULL,
+        editable=False
     )
 
     def save(self, *args, **kwargs):
@@ -61,3 +45,43 @@ class UserImage(models.Model):
     def __str__(self):
         image_name = self.image.name
         return image_name.replace("images/", "")
+
+
+
+class ThumbnailImage(models.Model):
+    user_image = models.ForeignKey(
+        UserImage,
+        on_delete=models.CASCADE,
+        related_name='thumbnails'
+    )
+    thumbnail = models.ImageField(
+        upload_to=settings.USER_IMAGE_IMAGE_THUMBNAIL_UPLOAD_TO,
+        blank=True,
+        null=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=[
+                    'jpg',
+                    'jpeg',
+                    'png'
+                ]
+            )
+        ]
+    )
+    width = models.PositiveIntegerField(blank=True, null=True)
+    height = models.PositiveIntegerField(blank=True, null=True)
+
+
+class ExpireLink(models.Model):
+    user_image = models.ForeignKey(
+        UserImage,
+        on_delete=models.CASCADE,
+        related_name='expire_links'
+    )
+    expire_link_duration = models.PositiveIntegerField(
+        validators=[
+            MinValueValidator(30),
+            MaxValueValidator(30000),
+        ]
+    )
+    expire_link = models.CharField(max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH)

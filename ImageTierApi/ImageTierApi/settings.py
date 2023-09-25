@@ -118,6 +118,10 @@ USER_IMAGE_EXPIRE_LINK_MAX_LENGTH = 255
 USER_IMAGE_EXPIRE_LINK_BLANK = True
 
 
+# ThumbnailImage model settings.
+USER_IMAGE_IMAGE_THUMBNAIL_UPLOAD_TO = 'images/thumbnails/'
+
+
 TIER_CHOICES = [
         ('Basic', 'Basic'),
         ('Premium', 'Premium'),

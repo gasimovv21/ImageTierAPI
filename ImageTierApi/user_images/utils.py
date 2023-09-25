@@ -18,6 +18,7 @@ def create_image(request):
 
     username = request.data.get('username')
     tier = request.data.get('tier')
+    print(request.data.get('expire_link_duration'))
 
     try:
         user = UserAccount.objects.get(username=username)
