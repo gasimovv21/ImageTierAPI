@@ -87,10 +87,10 @@ def create_image(request):
                 
                 original_image_url = urljoin(settings.MEDIA_URL, os.path.relpath(image_serializer.instance.image.path, settings.MEDIA_ROOT))
 
-            response_data = {"There is your link thumbnail that's 200px in height:": thumbnail_200_url}
+            response_data = {"There is your thumbnail link that's 200px in height:": thumbnail_200_url}
             
             if thumbnail_400_url:
-                response_data["There is your link thumbnail that's 400px in height:"] = thumbnail_400_url
+                response_data["There is your thumbnail link that's 400px in height:"] = thumbnail_400_url
             if original_image_url:
                 response_data["There is your original uploaded image link: "] = original_image_url
             return Response(response_data, status=status.HTTP_201_CREATED)

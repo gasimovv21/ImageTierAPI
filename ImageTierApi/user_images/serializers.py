@@ -3,8 +3,6 @@ from .models import UserImage
 
 class ImageSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
-    
-    # Добавляем expire_link_duration как вспомогательное поле
     expire_link_duration = serializers.IntegerField(required=False)
 
     class Meta:

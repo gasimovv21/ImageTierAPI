@@ -72,6 +72,10 @@ class ThumbnailImage(models.Model):
     height = models.PositiveIntegerField(blank=True, null=True)
 
 
+    def __str__(self):
+        return f"{self.user_image}"
+
+
 class ExpireLink(models.Model):
     user_image = models.ForeignKey(
         UserImage,
@@ -80,8 +84,11 @@ class ExpireLink(models.Model):
     )
     expire_link_duration = models.PositiveIntegerField(
         validators=[
-            MinValueValidator(30),
+            MinValueValidator(300),
             MaxValueValidator(30000),
         ]
     )
-    expire_link = models.CharField(max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH)
+    expire_link = models.CharField(
+        max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
+        blank=True,
+        )
