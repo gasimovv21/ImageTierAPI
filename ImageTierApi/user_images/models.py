@@ -1,7 +1,13 @@
+import secrets
+
+
 from django.db import models
 from django.conf import settings
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from user_accounts.models import UserAccount
+from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class UserImage(models.Model):
@@ -37,6 +43,7 @@ class UserImage(models.Model):
         null=settings.USER_IMAGE_HEIGHT_NULL,
         editable=False
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         self.format = self.image.name.split('.')[-1].lower()
@@ -82,9 +89,10 @@ class ExpireLink(models.Model):
         on_delete=models.CASCADE,
         related_name='expire_links'
     )
+    created_at = models.DateTimeField(auto_now_add=True)
     expire_link_duration = models.PositiveIntegerField(
         validators=[
-            MinValueValidator(300),
+            MinValueValidator(10),
             MaxValueValidator(30000),
         ]
     )
@@ -92,3 +100,16 @@ class ExpireLink(models.Model):
         max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
         blank=True,
         )
+
+
+    def save(self, *args, **kwargs):
+        if not self.expire_link:
+            self.expire_link = secrets.token_urlsafe(16)
+        super().save(*args, **kwargs)
+
+
+@receiver(post_save, sender=ExpireLink)
+def create_expire_link(sender, instance, **kwargs):
+    if not instance.expire_link:
+        instance.expire_link = secrets.token_urlsafe(16)
+        instance.save()

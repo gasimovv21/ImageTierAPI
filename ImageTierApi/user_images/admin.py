@@ -3,6 +3,8 @@ from .models import UserImage, ThumbnailImage, ExpireLink
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.contrib.admin.widgets import AdminTextInputWidget
+from django.utils.html import format_html
 
 @admin.register(UserImage)
 class UserImageAdmin(admin.ModelAdmin):
@@ -82,19 +84,32 @@ class ExpireLinkAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user_image',
+        'created_at',
         'expire_link_duration',
         'expire_link',
     )
     search_fields = (
         'id',
-        'user_image',
+        'user_image__image',
+        'created_at',
         'expire_link_duration',
         'expire_link',
     )
     list_filter = (
         'id',
-        'user_image',
+        'user_image__image',
+        'created_at',
         'expire_link_duration',
         'expire_link',
     )
     empty_value_display = '-empty-'
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'user_image':
+            # kwargs['widget'] = AdminTextInputWidget()
+            return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def user_image_link(self, obj):
+        return format_html('<a href="{}">{}</a>', obj.user_image.image.url, obj.user_image.image.url)
+
+    user_image_link.short_description = 'User Image'
