@@ -15,7 +15,7 @@ class ImageSerializer(serializers.ModelSerializer):
 class ExpireLinkSerializer(serializers.ModelSerializer):
     expire_link_duration = serializers.IntegerField(
         validators=[
-            MinValueValidator(30),
+            MinValueValidator(300),
             MaxValueValidator(30000),
         ]
     )

@@ -44,8 +44,8 @@ def create_image(request):
     if tier == settings.TIER_CHOICES[2][0]:
         if expire_link_duration is not None:
             expire_link_duration = int(expire_link_duration)
-            if not (30 <= expire_link_duration <= 30000):
-                return Response({'Expire link duration': 'Make sure that this value is in the range of 30 to 30000'}, status=status.HTTP_400_BAD_REQUEST)
+            if not (300 <= expire_link_duration <= 30000):
+                return Response({'Expire link duration': 'Make sure that this value is in the range of 300 to 30000'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({'Expire link error': 'Make sure that you sent expire_link_duration key.'}, status=status.HTTP_400_BAD_REQUEST)
     elif expire_link_duration is not None:

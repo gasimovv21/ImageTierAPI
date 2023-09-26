@@ -92,7 +92,7 @@ class ExpireLink(models.Model):
     )
     expire_link_duration = models.PositiveIntegerField(
         validators=[
-            MinValueValidator(10),
+            MinValueValidator(300),
             MaxValueValidator(30000),
         ]
     )
