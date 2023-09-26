@@ -4,6 +4,7 @@ import secrets
 from django.db import models
 from django.conf import settings
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
+from django.forms import ValidationError
 from user_accounts.models import UserAccount
 from django.utils import timezone
 from django.db.models.signals import post_save
@@ -89,27 +90,31 @@ class ExpireLink(models.Model):
         on_delete=models.CASCADE,
         related_name='expire_links'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
     expire_link_duration = models.PositiveIntegerField(
         validators=[
             MinValueValidator(10),
             MaxValueValidator(30000),
         ]
     )
-    expire_link = models.CharField(
-        max_length=settings.USER_IMAGE_EXPIRE_LINK_MAX_LENGTH,
-        blank=True,
-        )
+    expire_link_token = models.CharField(
+        max_length=settings.USER_IMAGE_EXPIRE_LINK_TOKEN_MAX_LENGTH,
+        blank=settings.USER_IMAGE_EXPIRE_LINK_TOKEN_BLANK,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
+    def clean(self):
+        if self.user_image.user.tier != 'Enterprise':
+            raise ValidationError('Account tier of the owner this image, must be "Enterprise" to create an expire link.')
 
     def save(self, *args, **kwargs):
-        if not self.expire_link:
-            self.expire_link = secrets.token_urlsafe(16)
+        if not self.expire_link_token:
+            self.expire_link_token = secrets.token_urlsafe(16)
         super().save(*args, **kwargs)
 
 
 @receiver(post_save, sender=ExpireLink)
-def create_expire_link(sender, instance, **kwargs):
-    if not instance.expire_link:
-        instance.expire_link = secrets.token_urlsafe(16)
+def create_expire_link_token(sender, instance, **kwargs):
+    if not instance.expire_link_token:
+        instance.expire_link_token = secrets.token_urlsafe(16)
         instance.save()

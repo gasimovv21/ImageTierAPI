@@ -34,6 +34,6 @@ def post_image(request):
 
 
 @api_view(['GET'])
-def get_expire_link(request, expire_link):
+def get_expire_link(request, expire_link_token):
     if request.method == 'GET':
-        return receive_expire_link(expire_link)
+        return receive_expire_link(expire_link_token)
