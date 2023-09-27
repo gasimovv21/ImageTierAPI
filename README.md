@@ -72,7 +72,7 @@ To get an image via an expiring link, make a GET request to /api/expire-links/{e
 For a detailed description of the API endpoints and data models, you can refer to the [schema.yaml](schema.yaml) file in this repository. Below is a link to summary of the API paths:
 
 ```
-[SWAGGER](#https://app.swaggerhub.com/apis/GASIME101AEHIT/ImageTierApi/1.0.0)
+[SWAGGER](https://app.swaggerhub.com/apis/GASIME101AEHIT/ImageTierApi/1.0.0)
 ```
 
 ## Testing 📊
