@@ -1,0 +1,27 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./ImageTierApi
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ImageTierApi:/app
+    depends_on:
+      - db
+    environment:
+      DB_NAME: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      DB_HOST: db
+      DB_PORT: 5432
+    env_file: 
+      - .env
+
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
