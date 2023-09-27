@@ -1,14 +1,16 @@
 import os
-
+from dotenv import load_dotenv
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-hc^-dz#z2=ilnsh&v^(2^ddt3oc@@!#v8b5(9!)!f5ml9@(+fo'
+load_dotenv()
 
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', default='*')
 
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG')
+
+ALLOWED_HOSTS = ['*']
 
 BASE_URL = 'http://127.0.0.1:8000'
 
@@ -62,8 +64,8 @@ WSGI_APPLICATION = 'ImageTierApi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('ENGINE'),
+        'NAME': BASE_DIR / os.getenv('NAME'),
     }
 }
 
