@@ -17,32 +17,60 @@ To set up the project, you'll need Docker and Docker Compose. Follow these steps
     ```
     SECRET_KEY=django-insecure-hc^-dz#z2=ilnsh&v^(2^ddt3oc@@!#v8b5(9!)!f5ml9@(+fo
     DEBUG=True
-    ENGINE=django.db.backends.sqlite3
-    NAME=db.sqlite3
+    NAME=mydb
+    USER=myuser
+    PASSWORD=mypassword
+    HOST=db
+    PORT=5432
 
-3. Start the project using Docker Compose:
+3. Open the terminal in project directory and start the project using Docker Compose command:
 
     ```
     docker-compose up --build
 
-4. After a successful launch, your application will be accessible at 😇
+4. Open one more terminal in project directory, for creating and using migration.
+    ```
+    1) docker-compose exec web python manage.py makemigrations
+    2) docker-compose exec web python manage.py migrate
+
+5. After a successful launch, your application will be accessible at 😇
 
     ```
     http://localhost:8000/
 
 ## Admin Panel 📑
 
-Administrators have access to the Django admin panel where they can create custom access tiers with configurable parameters such as thumbnail sizes, the presence of links to the original file, and the ability to generate expiration links.
+Administrators have access to the Django admin panel and pgAdmin4 where they can create custom access tiers with configurable parameters such as thumbnail sizes, the presence of links to the original file, and the ability to generate expiration links.
 
 
-1. Create superuser for admin panel.
+1. Create superuser for django-admin panel.
 
     ```
-    1) Open the terminal of the Docker container
-    2) Make sure that you are in correct directory where manage.py file.
-    3) Use command: python manage.py createsuperuser
-    4) Enter: name, email, password, password(second time)
-    5) Successfully you may enter to the adminstration panel: http://localhost:8000/admin/
+    1) Open the terminal in project directory
+    2) Use command: docker-compose exec web python manage.py createsuperuser
+    3) Enter: name, email, password, password(second time)
+    4) Successfully you may enter to the adminstration panel: http://localhost:8000/admin/
+
+2. Entering to pgAdmin4.
+
+    ```
+    1) Go to: http://localhost:5050/
+    2) Log in with the email and password specified in the PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD environment variables in your docker-compose.yml file.
+    4) Successfully you may enter to the pgAdmin4 panel.
+
+3. Connecting to the postgreSQL databse of project.
+    
+    ```
+    1) In the pgAdmin interface, click on "Add New Server" (usually a plus icon or an "Add New Server" option in the menu).
+    2) In the "General" tab, provide a name for your server in the "Name" field.
+    3) Switch to the "Connection" tab.
+    4) In the "Host name/address" field, enter the name of the PostgreSQL service in your Docker Compose setup. In your case, it's likely "db."
+    5) In the "Port" field, enter the PostgreSQL port, which is 5432 by default.
+    6) In the "Maintenance database" field, enter the name of your PostgreSQL database. In your case, it's "mydb."
+    7) In the "Username" and "Password" fields, enter the PostgreSQL username and password. In your case, they are "myuser" and "mypassword."
+    8) Click "Save" to save the connection details.
+    9) In the pgAdmin interface, you should now see your server listed in the left sidebar. Click on it to expand the tree and see the databases, schemas, and other objects.
+    10) You can now browse and manage your PostgreSQL database using pgAdmin.
 
 
 ## The API provides the following features 🎇
@@ -90,6 +118,7 @@ python manage.py test
 - REST API
 - PostgreSQL
 - Docker and docker compose
+- pgAdmin 4
 
 ### **Author 👨‍💻**
 
